@@ -1,10 +1,9 @@
 <p align="center">
-  <a href="https://vero.com">
-    <img src="https://github.com/qveezzx/vero-site/blob/main/assets/banner.png?raw=true" alt="Vero Banner" width="150px">
+  <a href="https://webvero.pages.dev/">
+    <img src="https://github.com/qveezzx/vero-site/blob/main/assets/banner.png?raw=true" alt="Vero Banner" width="100%">
   </a>
 </p>
 
-<h1 align="center">Vero</h1>
 
 <p align="center">
   <strong>An open-sourced, privacy-respecting, ad-free Lossless streaming platform.</strong>
@@ -39,7 +38,7 @@
   <a href="https://webvero.pages.dev/">
     <img src="https://img.shields.io/badge/Web-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black" alt="Web">
   </a><br>
-  <sub>This version is used on older hardware, iOS/iPadOS devices or Smart TV's.</sub>
+  <sub>The WEB version is meant to be used on older hardware, iOS/iPadOS devices or Smart TV's.</sub>
 </p>
 
 ---
