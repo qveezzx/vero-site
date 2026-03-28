@@ -3,7 +3,7 @@ name: Desktop Build (Vero)
 on:
   push:
     tags:
-      - 'v*' # Triggers when you push a version tag (v1.0.9, etc)
+      - 'v*' # Triggers when you push a version tag (v1.1.1, etc)
   workflow_dispatch: # Allows manual start from GitHub Actions tab
 
 permissions:
@@ -18,18 +18,12 @@ jobs:
         include:
           - os: windows-latest
             platform: windows
-            binary_source: Vero-win_x64.exe
-            binary_dest: Vero.exe
             archive_name: vero-windows.zip
           - os: ubuntu-latest
             platform: linux
-            binary_source: Vero-linux_x64
-            binary_dest: Vero
             archive_name: vero-linux.zip
           - os: macos-latest
             platform: macos
-            binary_source: Vero-mac_universal
-            binary_dest: Vero
             archive_name: vero-mac.zip
 
     steps:
@@ -37,6 +31,11 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Bun
+        uses: oven-sh/setup-node@v4
+        with:
+          node-version: '22'
+      
+      - name: Install Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
@@ -52,20 +51,28 @@ jobs:
         shell: bash
         run: |
           mkdir -p release
+          
           # Copy everything from the build output (includes .neu and .dll)
-          # We check for both Vero and Monochrome folders just in case
           if [ -d "dist/Vero" ]; then
             cp -r dist/Vero/* release/
-          else
+          elif [ -d "dist/Monochrome" ]; then
             cp -r dist/Monochrome/* release/
           fi
           
-          # Rename the raw binary to a clean name (Vero.exe or Vero)
-          mv release/${{ matrix.binary_source }} release/${{ matrix.binary_dest }}
-
-      - name: Set Permissions (Linux/macOS)
-        if: matrix.platform != 'windows'
-        run: chmod +x release/${{ matrix.binary_dest }}
+          # Move into release folder to clean up binary names
+          cd release
+          if [ "${{ matrix.platform }}" == "windows" ]; then
+            # Rename whatever .exe exists to Vero.exe
+            mv *.exe Vero.exe || true
+          elif [ "${{ matrix.platform }}" == "linux" ]; then
+            # Rename the linux binary to Vero
+            mv Vero-linux* Vero || mv *linux* Vero || true
+            chmod +x Vero
+          elif [ "${{ matrix.platform }}" == "macos" ]; then
+            # Rename the mac binary to Vero
+            mv Vero-mac* Vero || mv *mac* Vero || true
+            chmod +x Vero
+          fi
 
       - name: Zip Files (Windows)
         if: matrix.platform == 'windows'
