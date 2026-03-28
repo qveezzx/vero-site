@@ -1,14 +1,14 @@
 {
-    "name": "monochrome",
+    "name": "vero",
     "type": "module",
-    "version": "2.5.0",
+    "version": "1.0.0",
     "description": "[<img src=\"https://github.com/qveezzx/vero-site/blob/main/assets/512.png?raw=true\" alt=\"Vero Logo\">](https://vero-site.pages.dev)",
     "scripts": {
         "dev": "vite",
         "dev:desktop": "start bun run dev & node scripts/dev-runner.js",
         "build": "vite build",
         "build:desktop": "bun x neu build",
-        "postbuild": "node -e \"const fs = require('fs'); const path = require('path'); const src = 'extensions'; const dest = path.join('dist', 'Monochrome', 'extensions'); if (fs.existsSync(src)) { fs.mkdirSync(dest, { recursive: true }); fs.cpSync(src, dest, { recursive: true }); console.log('Extensions manually copied to ' + dest); }\"",
+        "postbuild": "node -e \"const fs = require('fs'); const path = require('path'); const src = 'extensions'; const dest = path.join('dist', 'Vero', 'extensions'); if (fs.existsSync(src)) { fs.mkdirSync(dest, { recursive: true }); fs.cpSync(src, dest, { recursive: true }); console.log('Extensions manually copied to ' + dest); }\"",
         "preview": "vite preview",
         "lint:js": "eslint .",
         "lint:css": "stylelint \"**/*.css\"",
