@@ -1,53 +1,38 @@
  <p align="center">
-  <a href="https://monochrome.tf">
-    <img src="https://github.com/monochrome-music/monochrome/blob/main/public/assets/512.png?raw=true" alt="Monochrome Logo" width="150px">
+  <a href="https://vero.com">
+    <img src="https://github.com/qveezzx/vero-site/blob/main/public/assets/512.png?raw=true" alt="Monochrome Logo" width="150px">
   </a>
 </p>
 
-<h1 align="center">Monochrome</h1>
+<h1 align="center">Vero</h1>
 
 <p align="center">
-  <strong>An open-source, privacy-respecting, ad-free music app.</strong>
+  <strong>An open-sourced, privacy-respecting, ad-free Lossless streaming platform.</strong>
 </p>
 
 <p align="center">
-  <a href="https://monochrome.tf">Website</a> -
-  <a href="https://ko-fi.com/monochromemusic">Donate</a> -
+  <a href="https://vero.com">Website</a> -
+  <a href="https://github.com/qveezzx">Donate</a> -
   <a href="#features">Features</a> -
-  <a href="#usage">Usage</a> -
-  <a href="#self-hosting">Self-Hosting</a> -
-  <a href="CONTRIBUTING.md">Contributing</a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/monochrome-music/monochrome/stargazers">
-    <img src="https://img.shields.io/github/stars/monochrome-music/monochrome?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub stars">
+  <a href="https://github.com/qveezzx/vero-site/stargazers">
+    <img src="https://img.shields.io/github/stars/qveezzx/vero-site?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub stars">
   </a>
-  <a href="https://github.com/monochrome-music/monochrome/forks">
-    <img src="https://img.shields.io/github/forks/monochrome-music/monochrome?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub forks">
+  <a href="https://github.com/qveezzx/vero-site/forks">
+    <img src="https://img.shields.io/github/forks/qveezzx/vero-site?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub forks">
   </a>
-  <a href="https://github.com/monochrome-music/monochrome/issues">
-    <img src="https://img.shields.io/github/issues/monochrome-music/monochrome?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub issues">
+  <a href="https://github.com/qveezzx/vero-site/issues">
+    <img src="https://img.shields.io/github/issues/qveezzx/vero-site?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub issues">
   </a>
 </p>
 
 ---
 
-## What is Monochrome?
+## What is Vero?
 
-**Monochrome** is an open-source, privacy-respecting, ad-free [TIDAL](https://tidal.com) web UI, built on top of Hi-Fi. It provides a beautiful, minimalist interface for streaming high-quality music without the clutter of traditional streaming platforms.
-
-<p align="center">
-  <a href="https://monochrome.tf/album/90502209">
-    <img width="2559" height="1439" alt="Image of 'NASIR' By Nas On Monochrome" src="https://i.samidy.xyz/NASIR.png"  alt="Monochrome UI" width="800">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://monochrome.tf/album/413189044">
-    <img width="2559" height="1439" alt="Image of 'Jump Out' By Osamason On Monochrome" src="https://i.samidy.xyz/jumpout.png"  alt="Monochrome UI" width="800">
-  </a>
-</p>
+**Vero** is an open-source, privacy-respecting, ad-free [TIDAL](https://tidal.com) based Streaming Service, built on top of Hi-Fi. It provides a beautiful, minimalist interface for streaming Lossless quality music without the clutter of traditional streaming platforms.
 
 ---
 
@@ -108,9 +93,9 @@
 
 ### Live Instance
 
-Our Recommended way to use monochrome is through our official instance:
+Our Recommended way to use Vero is through our official instance:
 
-**[monochrome.tf](https://monochrome.tf)** / **[monochrome.samidy.com](https://monochrome.samidy.com)**
+**[Vero.com](https://Vero.com)** / **[vero.to](https://vero.to)**
 
 For alternative instances, check [INSTANCES.md](INSTANCES.md).
 
@@ -125,8 +110,8 @@ We had to heavily customize the authentication system and write several custom s
 ### Option 1: Docker (Recommended)
 
 ```bash
-git clone https://github.com/monochrome-music/monochrome.git
-cd monochrome
+git clone https://github.com/qveezzx/vero-site.git
+cd vero-site
 docker compose up -d
 ```
 
@@ -170,8 +155,8 @@ For development mode and advanced setups, see [DOCKER.md](DOCKER.md).
 1. **Clone the repository:**
 
     ```bash
-    git clone https://github.com/monochrome-music/monochrome.git
-    cd monochrome
+    git clone https://github.com/qveezzx/vero-site.git
+    cd vero-site
     ```
 
 2. **Install dependencies:**
@@ -207,7 +192,7 @@ npm run build
 
 ### Basic Usage
 
-1. Visit the [Website](https://monochrome.tf) or your local development server
+1. Visit the [Website](https://vero.to) or your local development server
 2. Search for your favorite artists, albums, or tracks
 3. Click play to start streaming
 4. Use the media controls to manage playback, queue, and volume
@@ -259,27 +244,5 @@ We welcome contributions from the community! Please see our [Contributing Guide]
 ---
 
 <p align="center">
-  <a href="https://fmhy.net/audio#streaming-sites">
-    <img src="https://raw.githubusercontent.com/monochrome-music/monochrome/refs/heads/main/public/assets/asseenonfmhy880x310.png" alt="As seen on FMHY" height="50">
-  </a>
+  Made with ❤️ by the qveezz
 </p>
-
-<p align="center">
-  <a href="https://notbyai.fyi">
-    <img src="https://i.samidy.xyz/Developed-By-Humans-Not-By-AI-Badge-black%402x.png" alt="Developed by Humans" height="50">
-  </a>
-</p>
-
-<p align="center">
-  Made with ❤️ by the Monochrome team
-</p>
-
-## Star History
-
-<a href="https://www.star-history.com/#monochrome-music/monochrome&type=date&logscale&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=monochrome-music/monochrome&type=date&theme=dark&logscale&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=monochrome-music/monochrome&type=date&logscale&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=monochrome-music/monochrome&type=date&logscale&legend=top-left" />
- </picture>
-</a>
