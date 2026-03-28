@@ -5,11 +5,11 @@
     "": {
       "name": "monochrome",
       "dependencies": {
-        "@capacitor/android": "^8.2.0",
+        "@capacitor/android": "^8.3.0",
         "@capacitor/app": "^8.0.1",
-        "@capacitor/core": "^8.2.0",
+        "@capacitor/core": "^8.3.0",
         "@capacitor/haptics": "^8.0.1",
-        "@capacitor/ios": "^8.2.0",
+        "@capacitor/ios": "^8.3.0",
         "@dantheman827/taglib-ts": "https://github.com/DanTheMan827/taglib-ts/archive/b4238b2627aceb97f58813258046f1259f68cab7.tar.gz",
         "@ffmpeg/core": "^0.12.10",
         "@ffmpeg/ffmpeg": "^0.12.15",
