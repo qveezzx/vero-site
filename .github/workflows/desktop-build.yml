@@ -3,8 +3,8 @@ name: Desktop Build (Vero)
 on:
   push:
     tags:
-      - 'v*' # Triggers when you push a version tag (v1.1.1, etc)
-  workflow_dispatch: # Allows manual start from GitHub Actions tab
+      - 'v*'
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -30,12 +30,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Bun
-        uses: oven-sh/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '22'
       
-      - name: Install Bun
+      - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
@@ -52,7 +52,7 @@ jobs:
         run: |
           mkdir -p release
           
-          # Copy everything from the build output (includes .neu and .dll)
+          # Copy everything from the build output
           if [ -d "dist/Vero" ]; then
             cp -r dist/Vero/* release/
           elif [ -d "dist/Monochrome" ]; then
@@ -62,14 +62,11 @@ jobs:
           # Move into release folder to clean up binary names
           cd release
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            # Rename whatever .exe exists to Vero.exe
             mv *.exe Vero.exe || true
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            # Rename the linux binary to Vero
             mv Vero-linux* Vero || mv *linux* Vero || true
             chmod +x Vero
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            # Rename the mac binary to Vero
             mv Vero-mac* Vero || mv *mac* Vero || true
             chmod +x Vero
           fi
@@ -83,6 +80,7 @@ jobs:
         if: matrix.platform != 'windows'
         shell: bash
         run: |
+          # Zip the contents of the release folder directly
           cd release
           zip -r ../${{ matrix.archive_name }} .
 
