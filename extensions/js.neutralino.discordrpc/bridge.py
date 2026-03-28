@@ -34,11 +34,11 @@ def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_
 
     activity = {
         "details": str(details or "Idling"),
-        "state": str(state or "Monochrome"),
+        "state": str(state or "Vero"),
         "type": 2, # Listening
         "assets": {
-            "large_image": img if img and img.startswith('http') else "monochrome",
-            "large_text": str(large_text or "Monochrome")
+            "large_image": img if img and img.startswith('http') else "Vero",
+            "large_text": str(large_text or "Vero")
         }
     }
 
@@ -84,7 +84,7 @@ def main():
     recv_packet(ds) # Mandatory read
     
     time.sleep(0.5)
-    set_activity(ds, ppid, "Idling", "Monochrome")
+    set_activity(ds, ppid, "Idling", "Vero")
 
     # 4. Minimal WebSocket Client
     ws = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -138,7 +138,7 @@ def main():
                 d = msg['data']
                 set_activity(ds, ppid, d.get('details'), d.get('state'), d.get('largeImageKey'), d.get('startTimestamp'), d.get('endTimestamp'), d.get('largeImageText'), d.get('smallImageKey'), d.get('smallImageText'))
             elif msg['event'] == 'discord:clear':
-                set_activity(ds, ppid, "Idling", "Monochrome")
+                set_activity(ds, ppid, "Idling", "Vero")
             elif msg['event'] == 'windowClose':
                 break
         except socket.timeout:

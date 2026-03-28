@@ -17,7 +17,8 @@ function getGitCommitHash() {
 }
 
 export default defineConfig(({ mode }) => {
-    const IS_NEUTRALINO = mode === 'neutralino';
+    /** Desktop / CI: inject Neutralino globals while keeping default Vite mode "production". */
+    const IS_NEUTRALINO = mode === 'neutralino' || process.env.VERO_DESKTOP_BUILD === '1';
     const commitHash = getGitCommitHash();
 
     return {

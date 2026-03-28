@@ -5,7 +5,7 @@ function Log($m) { Add-Content $Log "$(Get-Date -f 'HH:mm:ss') - $m" }
 Log "--- START (DIAGNOSTIC) ---"
 
 # 1. PID
-$p = Get-Process Monochrome -ErrorAction SilentlyContinue | Select-Object -First 1
+$p = Get-Process Vero -ErrorAction SilentlyContinue | Select-Object -First 1
 if (-not $p) { $p = Get-Process neutralino-win_x64 -ErrorAction SilentlyContinue | Select-Object -First 1 }
 $pid_to_send = if ($p) { $p.Id } else { [System.Diagnostics.Process]::GetCurrentProcess().Id }
 
@@ -43,8 +43,8 @@ function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $smal
         state = [string]$s
         type = 2
         assets = @{
-            large_image = if ($img -and $img.StartsWith("http")) { [string]$img } else { "monochrome" }
-            large_text = if ($large_text) { [string]$large_text } else { "Monochrome" }
+            large_image = if ($img -and $img.StartsWith("http")) { [string]$img } else { "vero" }
+            large_text = if ($large_text) { [string]$large_text } else { "vero" }
         }
     }
 
@@ -70,7 +70,7 @@ function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $smal
 }
 
 Start-Sleep -Seconds 1
-Set-Activity "Idling" "Monochrome" $null $null $null $null $null $null
+Set-Activity "Idling" "Vero" $null $null $null $null $null $null
 
 # 4. Config & WS
 $line = [Console]::In.ReadLine()
@@ -96,7 +96,7 @@ while ($ws.State -eq "Open") {
             if ($msg.event -eq "discord:update") { 
                 Set-Activity $msg.data.details $msg.data.state $msg.data.largeImageKey $msg.data.startTimestamp $msg.data.endTimestamp $msg.data.largeImageText $msg.data.smallImageKey $msg.data.smallImageText
             }
-            elseif ($msg.event -eq "discord:clear") { Set-Activity "Idling" "Monochrome" $null $null $null $null $null $null }
+            elseif ($msg.event -eq "discord:clear") { Set-Activity "Idling" "Vero" $null $null $null $null $null $null }
         } catch {}
     }
 }

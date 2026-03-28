@@ -1,4 +1,4 @@
-package tf.monochrome.music;
+package com.qveezzx.vero;
 
 import com.getcapacitor.BridgeActivity;
 

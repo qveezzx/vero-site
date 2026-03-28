@@ -11,21 +11,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            platform: windows
-            archive_name: vero-windows.zip
-          - os: ubuntu-latest
-            platform: linux
-            archive_name: vero-linux.zip
-          - os: macos-latest
-            platform: macos
-            archive_name: vero-mac.zip
-
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -34,70 +20,87 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      
+
       - name: Setup Bun
         uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: bun install
 
-      - name: Download Neutralino binaries
+      - name: Download Neutralino binaries and client
         run: bun x neu update
 
-      - name: Build application
-        run: bun run build
+      - name: Build web assets for Neutralino
+        run: bun run build:web:desktop
 
-      - name: Prepare Release Folder
+      - name: Package Neutralino app (resources.neu + all platform binaries + extensions)
+        run: bun x neu build
+
+      - name: Create platform ZIPs
         shell: bash
         run: |
-          mkdir -p release
-          
-          # 1. Find where the Neutralino resources.neu file ended up
-          # It might be in dist/ or dist/Vero/
-          NEU_PATH=$(find dist -name "resources.neu" | head -n 1)
-          NEU_DIR=$(dirname "$NEU_PATH")
-          
-          echo "Found Neutralino resources at: $NEU_DIR"
-          
-          # 2. Copy EVERYTHING from that directory into our release folder
-          cp -r "$NEU_DIR"/* release/
-          
-          # 3. If extensions exist in the root dist, copy those too
-          if [ -d "dist/Vero/extensions" ]; then
-            cp -r dist/Vero/extensions release/
+          set -euo pipefail
+          PKG="dist/Vero"
+          if [ ! -d "$PKG" ]; then
+            echo "Missing $PKG after neu build"
+            exit 1
+          fi
+          if [ ! -f "$PKG/resources.neu" ]; then
+            echo "Missing resources.neu — neu build did not complete."
+            ls -la "$PKG" || true
+            exit 1
           fi
 
-          # 4. Clean up names
-          cd release
-          if [ "${{ matrix.platform }}" == "windows" ]; then
-            # Find any .exe (ignoring case) and rename it to Vero.exe
-            find . -maxdepth 1 -iname "*.exe" -exec mv {} Vero.exe \;
-            # Ensure WebView2Loader.dll is in the right spot
-          elif [ "${{ matrix.platform }}" == "linux" ]; then
-            # Find the binary (usually has no extension)
-            find . -maxdepth 1 -type f ! -name "*.*" -exec mv {} Vero \;
-            chmod +x Vero
-          elif [ "${{ matrix.platform }}" == "macos" ]; then
-            find . -maxdepth 1 -type f ! -name "*.*" -exec mv {} Vero \;
-            chmod +x Vero
+          mkdir -p release-artifacts
+          cd "$PKG"
+
+          chmod +x Vero-linux_x64 2>/dev/null || true
+          for m in Vero-mac_universal Vero-mac_arm64 Vero-mac_x64; do
+            if [ -f "$m" ]; then chmod +x "$m"; fi
+          done
+
+          WIN_EXE=$(compgen -G 'Vero-win*.exe' | head -n 1 || true)
+          if [ -z "${WIN_EXE:-}" ]; then
+            echo "No Windows executable (Vero-win*.exe) in $PKG"
+            ls -la
+            exit 1
           fi
 
-      - name: Zip Files (Windows)
-        if: matrix.platform == 'windows'
-        shell: pwsh
-        run: Compress-Archive -Path release/* -DestinationPath ${{ matrix.archive_name }} -Force
+          LIN_BIN=$(compgen -G 'Vero-linux_*' | head -n 1 || true)
+          if [ -z "${LIN_BIN:-}" ]; then
+            echo "No Linux binary (Vero-linux_*) in $PKG"
+            ls -la
+            exit 1
+          fi
 
-      - name: Zip Files (Linux/Mac)
-        if: matrix.platform != 'windows'
-        shell: bash
-        run: |
-          # Zip the contents of the release folder directly
-          cd release
-          zip -r ../${{ matrix.archive_name }} .
+          MAC_BIN=""
+          for candidate in Vero-mac_universal Vero-mac_arm64 Vero-mac_x64; do
+            if [ -f "$candidate" ]; then MAC_BIN="$candidate"; break; fi
+          done
+          if [ -z "${MAC_BIN:-}" ]; then
+            echo "No macOS binary (Vero-mac_*) in $PKG"
+            ls -la
+            exit 1
+          fi
+
+          if [ ! -d extensions ] || [ -z "$(ls -A extensions 2>/dev/null)" ]; then
+            echo "extensions/ missing or empty — check neutralino.config.json cli.extensionsPath"
+            ls -la
+            exit 1
+          fi
+
+          zip -r "$GITHUB_WORKSPACE/release-artifacts/vero-windows.zip" resources.neu extensions "$WIN_EXE"
+          zip -r "$GITHUB_WORKSPACE/release-artifacts/vero-linux.zip" resources.neu extensions "$LIN_BIN"
+          zip -r "$GITHUB_WORKSPACE/release-artifacts/vero-mac.zip" resources.neu extensions "$MAC_BIN"
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ${{ matrix.archive_name }}
+          files: |
+            release-artifacts/vero-windows.zip
+            release-artifacts/vero-linux.zip
+            release-artifacts/vero-mac.zip
+          name: Vero Desktop ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace = "tf.monochrome.music"
+    namespace = "com.qveezzx.vero"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "tf.monochrome.music"
+        applicationId "com.qveezzx.vero"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

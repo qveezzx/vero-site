@@ -33,6 +33,8 @@
     "cli": {
         "binaryName": "Vero",
         "resourcesPath": "dist/",
+        "extensionsPath": "extensions",
+        "resourcesExclude": "dist(\\\\|/)Vero",
         "binaryVersion": "6.5.0",
         "clientVersion": "6.5.0"
     },

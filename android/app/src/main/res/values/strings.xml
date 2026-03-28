@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">monochrome</string>
-    <string name="title_activity_main">monochrome</string>
-    <string name="package_name">tf.monochrome.music</string>
-    <string name="custom_url_scheme">tf.monochrome.music</string>
+    <string name="app_name">vero</string>
+    <string name="title_activity_main">vero</string>
+    <string name="package_name">com.qveezzx.vero</string>
+    <string name="custom_url_scheme">com.qveezzx.vero</string>
 </resources>
