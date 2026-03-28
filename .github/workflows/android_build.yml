@@ -42,7 +42,7 @@ jobs:
       - name: Create Release and Upload APK
         uses: softprops/action-gh-release@v1
         with:
-          files: android/app/build/outputs/apk/debug/vero-debug.apk
+          files: android/app/build/outputs/apk/debug/*.apk
           name: Vero Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
         env:

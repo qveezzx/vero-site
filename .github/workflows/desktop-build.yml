@@ -3,8 +3,8 @@ name: Desktop Build (Vero)
 on:
   push:
     tags:
-      - 'v*' # Triggers when you push a version tag
-  workflow_dispatch: # Allows manual start
+      - 'v*' # Triggers when you push a version tag (v1.0.9, etc)
+  workflow_dispatch: # Allows manual start from GitHub Actions tab
 
 permissions:
   contents: write
@@ -19,14 +19,17 @@ jobs:
           - os: windows-latest
             platform: windows
             binary_source: Vero-win_x64.exe
+            binary_dest: Vero.exe
             archive_name: vero-windows.zip
           - os: ubuntu-latest
             platform: linux
             binary_source: Vero-linux_x64
+            binary_dest: Vero
             archive_name: vero-linux.zip
           - os: macos-latest
             platform: macos
             binary_source: Vero-mac_universal
+            binary_dest: Vero
             archive_name: vero-mac.zip
 
     steps:
@@ -49,9 +52,22 @@ jobs:
         shell: bash
         run: |
           mkdir -p release
-          cp -r dist/Vero/* release/ || cp -r dist/Monochrome/* release/
+          # Copy everything from the build output (includes .neu and .dll)
+          # We check for both Vero and Monochrome folders just in case
+          if [ -d "dist/Vero" ]; then
+            cp -r dist/Vero/* release/
+          else
+            cp -r dist/Monochrome/* release/
+          fi
           
-      - name: Zip Files
+          # Rename the raw binary to a clean name (Vero.exe or Vero)
+          mv release/${{ matrix.binary_source }} release/${{ matrix.binary_dest }}
+
+      - name: Set Permissions (Linux/macOS)
+        if: matrix.platform != 'windows'
+        run: chmod +x release/${{ matrix.binary_dest }}
+
+      - name: Zip Files (Windows)
         if: matrix.platform == 'windows'
         shell: pwsh
         run: Compress-Archive -Path release/* -DestinationPath ${{ matrix.archive_name }} -Force
@@ -59,7 +75,9 @@ jobs:
       - name: Zip Files (Linux/Mac)
         if: matrix.platform != 'windows'
         shell: bash
-        run: zip -r ${{ matrix.archive_name }} release/
+        run: |
+          cd release
+          zip -r ../${{ matrix.archive_name }} .
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v1
