@@ -1,8 +1,10 @@
-name: Build Android APK
+name: Build and Release Android APK
 
 on:
   push:
-    branches: [ main ] # Runs every time you push to GitHub
+    tags:
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -10,6 +12,11 @@ jobs:
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22' # This fixes your error!
 
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
@@ -28,12 +35,16 @@ jobs:
 
       - name: Build APK with Capacitor
         run: |
-          bun x cap sync android
+          # We use npx here to ensure it uses the Node 22 environment
+          npx cap sync android
           cd android
           ./gradlew assembleDebug
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
+      - name: Create Release and Upload APK
+        uses: softprops/action-gh-release@v1
         with:
-          name: Vero-App
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          files: android/app/build/outputs/apk/debug/app-debug.apk
+          name: Vero Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
