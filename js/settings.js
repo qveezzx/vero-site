@@ -41,6 +41,7 @@ import { authManager } from './accounts/auth.js';
 import { syncManager } from './accounts/pocketbase.js';
 import { containerFormats, customFormats } from './ffmpegFormats.ts';
 import { modernSettings } from './ModernSettings.js';
+import { setupAuthWelcomeGate, EMAIL_AUTH_MODAL_CLOSED_EVENT } from './authWelcomeGate.js';
 
 async function getButterchurnPresets(...args) {
     const butterchurnModule = await import('./visualizers/butterchurn.js');
@@ -78,7 +79,10 @@ export async function initializeSettings(scrobbler, player, api, ui) {
     }
 
     if (authModal) {
-        const closeAuthModal = () => authModal.classList.remove('active');
+        const closeAuthModal = () => {
+            authModal.classList.remove('active');
+            document.dispatchEvent(new CustomEvent(EMAIL_AUTH_MODAL_CLOSED_EVENT));
+        };
         authModalCloseBtn?.addEventListener('click', closeAuthModal);
         authModal.querySelector('.modal-overlay')?.addEventListener('click', closeAuthModal);
     }
@@ -94,6 +98,7 @@ export async function initializeSettings(scrobbler, player, api, ui) {
             try {
                 await authManager.signInWithEmail(email, password);
                 authModal.classList.remove('active');
+                document.dispatchEvent(new CustomEvent(EMAIL_AUTH_MODAL_CLOSED_EVENT));
                 emailInput.value = '';
                 passwordInput.value = '';
             } catch {
@@ -113,6 +118,7 @@ export async function initializeSettings(scrobbler, player, api, ui) {
             try {
                 await authManager.signUpWithEmail(email, password);
                 authModal.classList.remove('active');
+                document.dispatchEvent(new CustomEvent(EMAIL_AUTH_MODAL_CLOSED_EVENT));
                 emailInput.value = '';
                 passwordInput.value = '';
             } catch {
@@ -135,6 +141,8 @@ export async function initializeSettings(scrobbler, player, api, ui) {
             }
         });
     }
+
+    setupAuthWelcomeGate(authManager);
 
     const lastfmConnectBtn = document.getElementById('lastfm-connect-btn');
     const lastfmStatus = document.getElementById('lastfm-status');
@@ -1131,6 +1139,59 @@ export async function initializeSettings(scrobbler, player, api, ui) {
             gaplessPlaybackSettings.setEnabled(e.target.checked);
         });
     }
+
+    const remoteModeToggle = document.getElementById('remote-mode-toggle');
+    const remoteRoleSelect = document.getElementById('remote-role-select');
+    const remoteTargetDeviceInput = document.getElementById('remote-target-device-id');
+    const remoteLocalDeviceDisplay = document.getElementById('remote-local-device-id');
+
+    const syncRemoteControlUi = async () => {
+        try {
+            const { getOrCreateLocalDeviceId, refreshRemoteControlState } = await import('./lib/useRemoteControl.js');
+            if (remoteLocalDeviceDisplay) {
+                remoteLocalDeviceDisplay.textContent = getOrCreateLocalDeviceId();
+            }
+            await refreshRemoteControlState();
+        } catch (e) {
+            console.warn('Remote control UI sync failed:', e);
+        }
+    };
+
+    if (remoteModeToggle) {
+        remoteModeToggle.checked = localStorage.getItem('vero-remote-enabled') === '1';
+        remoteModeToggle.addEventListener('change', (e) => {
+            localStorage.setItem('vero-remote-enabled', e.target.checked ? '1' : '0');
+            void syncRemoteControlUi();
+        });
+    }
+
+    if (remoteRoleSelect) {
+        const saved = localStorage.getItem('vero-remote-role') || 'auto';
+        remoteRoleSelect.value = saved === 'listener' || saved === 'sender' ? saved : 'auto';
+        remoteRoleSelect.addEventListener('change', (e) => {
+            const v = e.target.value;
+            if (v === 'auto') {
+                localStorage.removeItem('vero-remote-role');
+            } else {
+                localStorage.setItem('vero-remote-role', v);
+            }
+            void syncRemoteControlUi();
+        });
+    }
+
+    if (remoteTargetDeviceInput) {
+        remoteTargetDeviceInput.value = localStorage.getItem('vero-remote-target-device-id') || '';
+        remoteTargetDeviceInput.addEventListener('change', () => {
+            const v = remoteTargetDeviceInput.value.trim();
+            if (v) {
+                localStorage.setItem('vero-remote-target-device-id', v);
+            } else {
+                localStorage.removeItem('vero-remote-target-device-id');
+            }
+        });
+    }
+
+    void syncRemoteControlUi();
 
     // ReplayGain Settings
     const replayGainMode = document.getElementById('replay-gain-mode');

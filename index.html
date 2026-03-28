@@ -94,6 +94,25 @@
             </ul>
         </div>
 
+        <div id="auth-welcome-gate-modal" class="modal auth-welcome-gate-modal" aria-modal="true" role="dialog" aria-labelledby="auth-welcome-gate-title">
+            <div class="modal-overlay" aria-hidden="true"></div>
+            <div class="modal-content auth-welcome-gate-content medium">
+                <h2 id="auth-welcome-gate-title" class="auth-welcome-gate-title">Welcome to Vero</h2>
+                <p class="auth-welcome-gate-desc">
+                    Sign in to sync your library across devices, or continue without an account.
+                </p>
+                <div class="auth-welcome-gate-buttons" id="auth-welcome-gate-buttons">
+                    <button type="button" id="auth-welcome-google" class="btn-secondary auth-welcome-gate-btn">Connect with Google</button>
+                    <button type="button" id="auth-welcome-github" class="btn-secondary auth-welcome-gate-btn">Connect with GitHub</button>
+                    <button type="button" id="auth-welcome-discord" class="btn-secondary auth-welcome-gate-btn">Connect with Discord</button>
+                    <button type="button" id="auth-welcome-email" class="btn-secondary auth-welcome-gate-btn">Connect with Email</button>
+                </div>
+                <p class="auth-welcome-gate-guest-wrap">
+                    <button type="button" class="auth-welcome-guest-link" id="auth-welcome-guest">Continue as Guest</button>
+                </p>
+            </div>
+        </div>
+
         <div id="sort-menu" style="display: none">
             <ul>
                 <li data-sort="custom">Playlist Order</li>
@@ -1614,12 +1633,6 @@
                                         <a href="/about">
                                             <use svg="!lucide/info.svg" size="24" />
                                             <span>About</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item" id="sidebar-nav-discordbtn">
-                                        <a href="discord.html" target="_blank">
-                                            <use svg="./images/discord.svg" size="64" />
-                                            <span>Discord</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="sidebar-nav-githubbtn" style="display: none">
@@ -3205,18 +3218,6 @@
                                     </div>
                                     <div class="setting-item">
                                         <div class="info">
-                                            <span class="label">Show Discord in Sidebar</span>
-                                            <span class="description"
-                                                >Display the Discord link in the sidebar navigation</span
-                                            >
-                                        </div>
-                                        <label class="toggle-switch">
-                                            <input type="checkbox" id="sidebar-show-discordbtn-toggle" checked />
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
-                                    <div class="setting-item">
-                                        <div class="info">
                                             <span class="label">Show GitHub in Sidebar</span>
                                             <span class="description"
                                                 >Display the GitHub link in the sidebar navigation</span
@@ -3769,6 +3770,64 @@
                                         <input type="checkbox" id="gapless-playback-toggle" checked />
                                         <span class="slider"></span>
                                     </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="info">
+                                        <span class="label">Remote mode</span>
+                                        <span class="description"
+                                            >Spotify Connect–style control via Appwrite. Wide screens default to
+                                            <strong>listener</strong> (plays audio, receives commands). Narrow screens
+                                            default to <strong>remote</strong> (sends commands, no local playback for
+                                            transport). Sign in with the same Appwrite account; set collection
+                                            permissions for create/read.</span
+                                        >
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="remote-mode-toggle" />
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="info">
+                                        <span class="label">Remote role override</span>
+                                        <span class="description">Leave on Auto unless this device should always listen or always send</span>
+                                    </div>
+                                    <select id="remote-role-select">
+                                        <option value="auto">Auto (by screen width)</option>
+                                        <option value="listener">Always listener (player)</option>
+                                        <option value="sender">Always remote (sender)</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="info">
+                                        <span class="label">This device ID</span>
+                                        <span class="description"
+                                            >Share this with your phone so it can target this machine.</span
+                                        >
+                                    </div>
+                                    <code
+                                        id="remote-local-device-id"
+                                        style="
+                                            font-size: 0.8rem;
+                                            word-break: break-all;
+                                            max-width: 220px;
+                                            text-align: right;
+                                        "
+                                    ></code>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="info">
+                                        <span class="label">Target device ID</span>
+                                        <span class="description">Paste the player’s ID when using this device as the remote</span>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        id="remote-target-device-id"
+                                        class="template-input"
+                                        placeholder="Listener device ID"
+                                        autocomplete="off"
+                                        style="max-width: 280px"
+                                    />
                                 </div>
                             </div>
 
@@ -4711,8 +4770,8 @@
                         </div>
                         <br />
                         <h4 style="text-align: center; padding-top: 15px; color: #8b8b93">
-                            The App is still in Beta. Please report any issues in our
-                            <a href="discord.html" style="text-decoration: underline">Discord server.</a>
+                             
+                            <a href="discord.html" style="text-decoration: underline"> </a>
                         </h4>
                     </div>
                 </div>

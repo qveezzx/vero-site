@@ -23,6 +23,7 @@ import { db } from './db.js';
 
 import { SVG_CLOCK, SVG_ATMOS } from './icons.js';
 import { UIRenderer } from './ui.js';
+import { shouldBlockLocalPlaybackForRemote } from './lib/remotePlaybackFlags.js';
 
 export class Player {
     static #instance = null;
@@ -1056,6 +1057,10 @@ export class Player {
     }
 
     playNext(recursiveCount = 0) {
+        if (recursiveCount === 0 && shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('next'));
+            return;
+        }
         const currentQueue = this.getCurrentQueue();
         const isLastTrack = this.currentQueueIndex >= currentQueue.length - 1;
 
@@ -1285,6 +1290,10 @@ export class Player {
     }
 
     playPrev(recursiveCount = 0) {
+        if (recursiveCount === 0 && shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('prev'));
+            return;
+        }
         const el = this.activeElement;
         if (el.currentTime > 3) {
             el.currentTime = 0;
@@ -1315,6 +1324,10 @@ export class Player {
     }
 
     handlePlayPause() {
+        if (shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('playPause'));
+            return;
+        }
         const el = this.activeElement;
         const hasSource = el.src || el.currentSrc || el.srcObject || this.shakaInitialized;
 
@@ -1340,6 +1353,10 @@ export class Player {
     }
 
     seekBackward(seconds = 10) {
+        if (shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('seekBackward'));
+            return;
+        }
         const el = this.activeElement;
         const newTime = Math.max(0, el.currentTime - seconds);
         el.currentTime = newTime;
@@ -1347,6 +1364,10 @@ export class Player {
     }
 
     seekForward(seconds = 10) {
+        if (shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('seekForward'));
+            return;
+        }
         const el = this.activeElement;
         const duration = el.duration || 0;
         const newTime = Math.min(duration, el.currentTime + seconds);
@@ -1946,6 +1967,10 @@ export class Player {
     }
 
     async safePlay(element = this.activeElement) {
+        if (shouldBlockLocalPlaybackForRemote()) {
+            import('./lib/useRemoteControl.js').then((m) => m.sendRemoteCommand('play'));
+            return true;
+        }
         try {
             await element.play();
             this.autoplayBlocked = false;

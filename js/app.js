@@ -467,6 +467,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     const currentQuality = localStorage.getItem('playback-quality') || 'HI_RES_LOSSLESS';
     await Player.initialize(audioPlayer, MusicAPI.instance, currentQuality);
 
+    import('./lib/useRemoteControl.js').then((m) => m.initRemoteControl(Player.instance));
+    authManager.onAuthStateChanged(() => {
+        import('./lib/useRemoteControl.js').then((m) => void m.refreshRemoteControlState());
+    });
+
     // Initialize tracker
     initTracker();
 

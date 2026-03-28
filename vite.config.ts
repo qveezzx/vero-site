@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import neutralino from 'vite-plugin-neutralino';
 import authGatePlugin from './vite-plugin-auth-gate.js';
@@ -20,11 +20,18 @@ export default defineConfig(({ mode }) => {
     /** Desktop / CI: inject Neutralino globals while keeping default Vite mode "production". */
     const IS_NEUTRALINO = mode === 'neutralino' || process.env.VERO_DESKTOP_BUILD === '1';
     const commitHash = getGitCommitHash();
+    const env = loadEnv(mode, process.cwd(), '');
 
     return {
         base: './',
         define: {
             __COMMIT_HASH__: JSON.stringify(commitHash),
+            'import.meta.env.APPWRITE_ENDPOINT': JSON.stringify(
+                env.APPWRITE_ENDPOINT || env.VITE_APPWRITE_ENDPOINT || ''
+            ),
+            'import.meta.env.APPWRITE_PROJECT_ID': JSON.stringify(
+                env.APPWRITE_PROJECT_ID || env.VITE_APPWRITE_PROJECT_ID || ''
+            ),
         },
         worker: {
             format: 'es',

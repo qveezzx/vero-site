@@ -7,7 +7,7 @@ export function initializeDiscordRPC(player) {
     function sendUpdate(track, isPaused = false) {
         if (!track) return;
 
-        let coverUrl = 'monochrome';
+        let coverUrl = 'vero';
         if (track.album?.cover) {
             const coverId = String(track.album.cover).replace(/-/g, '/');
             coverUrl = `https://resources.tidal.com/images/${coverId}/320x320.jpg`;
@@ -17,7 +17,7 @@ export function initializeDiscordRPC(player) {
             details: getTrackTitle(track),
             state: getTrackArtists(track),
             largeImageKey: coverUrl,
-            largeImageText: track.album?.title || 'Monochrome',
+            largeImageText: track.album?.title || 'Vero',
             smallImageKey: isPaused ? 'pause' : 'play',
             smallImageText: isPaused ? 'Paused' : 'Playing',
             instance: false,
@@ -59,9 +59,9 @@ export function initializeDiscordRPC(player) {
         Neutralino.events
             .broadcast('discord:update', {
                 details: 'Idling',
-                state: 'Monochrome',
-                largeImageKey: 'monochrome',
-                largeImageText: 'Monochrome',
+                state: 'Vero',
+                largeImageKey: 'vero',
+                largeImageText: 'vero',
                 smallImageKey: 'pause',
                 smallImageText: 'Paused',
             })

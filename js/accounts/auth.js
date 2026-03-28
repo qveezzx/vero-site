@@ -39,7 +39,6 @@ export class AuthManager {
 
     onAuthStateChanged(callback) {
         this.authListeners.push(callback);
-        // If we already have a user state, trigger immediately
         if (this.user !== null) {
             callback(this.user);
         }
@@ -49,7 +48,7 @@ export class AuthManager {
         try {
             auth.createOAuth2Session(
                 'google',
-                window.location.origin + '/index.html?oauth=1',
+                window.location.origin + '/?oauth=1',
                 window.location.origin + '/login.html'
             );
         } catch (error) {
@@ -62,7 +61,7 @@ export class AuthManager {
         try {
             auth.createOAuth2Session(
                 'github',
-                window.location.origin + '/index.html?oauth=1',
+                window.location.origin + '/?oauth=1',
                 window.location.origin + '/login.html'
             );
         } catch (error) {
@@ -75,7 +74,7 @@ export class AuthManager {
         try {
             auth.createOAuth2Session(
                 'spotify',
-                window.location.origin + '/index.html?oauth=1',
+                window.location.origin + '/?oauth=1',
                 window.location.origin + '/login.html'
             );
         } catch (error) {
@@ -88,7 +87,7 @@ export class AuthManager {
         try {
             auth.createOAuth2Session(
                 'discord',
-                window.location.origin + '/index.html?oauth=1',
+                window.location.origin + '/?oauth=1',
                 window.location.origin + '/login.html'
             );
         } catch (error) {
@@ -186,15 +185,6 @@ export class AuthManager {
                         el.style.display = 'none';
                     }
                 });
-            }
-
-            const customDbBtn = document.getElementById('custom-db-btn');
-            if (customDbBtn) {
-                const pbFromEnv = !!window.__POCKETBASE_URL__;
-                if (pbFromEnv) {
-                    const settingItem = customDbBtn.closest('.setting-item');
-                    if (settingItem) settingItem.style.display = 'none';
-                }
             }
 
             return;

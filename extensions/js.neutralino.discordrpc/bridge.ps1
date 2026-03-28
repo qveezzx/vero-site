@@ -30,8 +30,8 @@ function Send-Packet($op, $json) {
     $pipe.Write($pkt, 0, $pkt.Length); $pipe.Flush()
 }
 
-# 3. Handshake
-Send-Packet 0 (@{ v = 1; client_id = "1462186088184549661" } | ConvertTo-Json -Compress)
+# 3. Handshake (UPDATED WITH YOUR NEW CLIENT ID)
+Send-Packet 0 (@{ v = 1; client_id = "1487535449781047378" } | ConvertTo-Json -Compress)
 $h = New-Object byte[] 8; if ($pipe.Read($h, 0, 8) -eq 8) {
     $l = [BitConverter]::ToInt32($h, 4); $b = New-Object byte[] $l; $pipe.Read($b, 0, $l) | Out-Null
     Log "Handshake OK"
@@ -43,9 +43,14 @@ function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $smal
         state = [string]$s
         type = 2
         assets = @{
+            # Forces "vero" asset key if not a direct URL
             large_image = if ($img -and $img.StartsWith("http")) { [string]$img } else { "vero" }
-            large_text = if ($large_text) { [string]$large_text } else { "vero" }
+            large_text = if ($large_text) { [string]$large_text } else { "Vero Lossless" }
         }
+        # ADDED BUTTONS ARRAY
+        buttons = @(
+            @{ label = "Listen on Vero"; url = "https://webvero.pages.dev" }
+        )
     }
 
     if ($small_img) {
@@ -59,7 +64,7 @@ function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $smal
         if ($end) { $activity.timestamps.end = [long]$end }
     }
     
-    # CRITICAL: -Depth 10 ensures 'assets' is not stringified as a class name
+    # CRITICAL: -Depth 10 ensures 'assets' and 'buttons' are not stringified incorrectly
     $payload = @{
         cmd = "SET_ACTIVITY"
         args = @{ pid = [int]$pid_to_send; activity = $activity }
@@ -72,7 +77,7 @@ function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $smal
 Start-Sleep -Seconds 1
 Set-Activity "Idling" "Vero" $null $null $null $null $null $null
 
-# 4. Config & WS
+# 4. Config & WS (Neutralino Bridge)
 $line = [Console]::In.ReadLine()
 if (-not $line) { exit }
 $config = $line | ConvertFrom-Json

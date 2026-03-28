@@ -1,7 +1,8 @@
 # bridge.py - Production Discord RPC Bridge (Linux/macOS)
 import sys, json, socket, struct, os, uuid, base64, time
 
-CLIENT_ID = "1462186088184549661"
+# UPDATED WITH YOUR NEW CLIENT ID
+CLIENT_ID = "1487535449781047378" 
 LAST_STATUS = ""
 
 def get_discord_path():
@@ -23,7 +24,6 @@ def recv_packet(s):
         payload = s.recv(length)
         return json.loads(payload.decode('utf-8'))
     except Exception:
-        # Ignore errors and return None
         return None
 
 def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_text=None, small_img=None, small_txt=None):
@@ -37,9 +37,14 @@ def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_
         "state": str(state or "Vero"),
         "type": 2, # Listening
         "assets": {
-            "large_image": img if img and img.startswith('http') else "Vero",
-            "large_text": str(large_text or "Vero")
-        }
+            # Forces "vero" asset key to match your portal setup
+            "large_image": img if img and img.startswith('http') else "vero",
+            "large_text": str(large_text or "Vero Lossless")
+        },
+        # ADDED BUTTONS ARRAY
+        "buttons": [
+            { "label": "Listen on Vero", "url": "https://webvero.pages.dev" }
+        ]
     }
 
     if small_img:
@@ -58,41 +63,35 @@ def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_
     })
 
 def main():
-    # 1. Read config
     try:
         line = sys.stdin.readline()
         if not line: return
         config = json.loads(line)
     except Exception:
-        # Ignore errors and exit
         return
 
     ppid = os.getppid()
 
-    # 2. Connect to Discord
     ipc_path = get_discord_path()
     if not ipc_path: return
     try:
         ds = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         ds.connect(ipc_path)
     except Exception:
-        # Ignore connection errors and exit
         return
 
-    # 3. Handshake
+    # Handshake with new CLIENT_ID
     send_packet(ds, 0, {"v": 1, "client_id": CLIENT_ID})
-    recv_packet(ds) # Mandatory read
+    recv_packet(ds) 
     
     time.sleep(0.5)
     set_activity(ds, ppid, "Idling", "Vero")
 
-    # 4. Minimal WebSocket Client
     ws = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     ws.settimeout(1.0)
     try:
         ws.connect(('127.0.0.1', int(config['nlPort'])))
     except Exception:
-        # Ignore connection errors and exit
         return
     
     key = base64.b64encode(os.urandom(16)).decode()
@@ -106,7 +105,6 @@ def main():
     )
     ws.sendall(handshake.encode())
     
-    # Skip HTTP response header
     resp = b""
     while b"\r\n\r\n" not in resp:
         try:
@@ -115,9 +113,7 @@ def main():
             resp += chunk
         except socket.timeout: continue
 
-    # 5. Loop
     while True:
-        # Watchdog
         try:
             os.kill(ppid, 0)
         except OSError: break
@@ -142,13 +138,10 @@ def main():
             elif msg['event'] == 'windowClose':
                 break
         except socket.timeout:
-            # Timeout is expected, continue polling
             continue
         except Exception:
-            # Ignore other errors and continue
             continue
 
-    # Cleanup
     try:
         send_packet(ds, 1, {
             "cmd": "SET_ACTIVITY",
@@ -158,7 +151,6 @@ def main():
         time.sleep(0.1)
         ds.close()
     except Exception:
-        # Ignore cleanup errors
         pass
 
 if __name__ == "__main__":
