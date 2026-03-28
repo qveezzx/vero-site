@@ -52,22 +52,33 @@ jobs:
         run: |
           mkdir -p release
           
-          # Copy everything from the build output
-          if [ -d "dist/Vero" ]; then
-            cp -r dist/Vero/* release/
-          elif [ -d "dist/Monochrome" ]; then
-            cp -r dist/Monochrome/* release/
-          fi
+          # 1. Find where the Neutralino resources.neu file ended up
+          # It might be in dist/ or dist/Vero/
+          NEU_PATH=$(find dist -name "resources.neu" | head -n 1)
+          NEU_DIR=$(dirname "$NEU_PATH")
           
-          # Move into release folder to clean up binary names
+          echo "Found Neutralino resources at: $NEU_DIR"
+          
+          # 2. Copy EVERYTHING from that directory into our release folder
+          cp -r "$NEU_DIR"/* release/
+          
+          # 3. If extensions exist in the root dist, copy those too
+          if [ -d "dist/Vero/extensions" ]; then
+            cp -r dist/Vero/extensions release/
+          fi
+
+          # 4. Clean up names
           cd release
           if [ "${{ matrix.platform }}" == "windows" ]; then
-            mv *.exe Vero.exe || true
+            # Find any .exe (ignoring case) and rename it to Vero.exe
+            find . -maxdepth 1 -iname "*.exe" -exec mv {} Vero.exe \;
+            # Ensure WebView2Loader.dll is in the right spot
           elif [ "${{ matrix.platform }}" == "linux" ]; then
-            mv Vero-linux* Vero || mv *linux* Vero || true
+            # Find the binary (usually has no extension)
+            find . -maxdepth 1 -type f ! -name "*.*" -exec mv {} Vero \;
             chmod +x Vero
           elif [ "${{ matrix.platform }}" == "macos" ]; then
-            mv Vero-mac* Vero || mv *mac* Vero || true
+            find . -maxdepth 1 -type f ! -name "*.*" -exec mv {} Vero \;
             chmod +x Vero
           fi
 
