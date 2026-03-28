@@ -5405,7 +5405,7 @@ export class UIRenderer {
             trendingContainer.innerHTML = createPlaceholder('Failed to load trending podcasts.');
         }
 
-        document.title = 'Podcasts - Monochrome Music';
+        document.title = 'Podcasts - Vero';
     }
 
     cleanupPodcastState() {
@@ -5451,7 +5451,7 @@ export class UIRenderer {
                 this.podcastState.podcastTitle = 'Unknown Podcast';
             }
 
-            document.title = `${podcastResult?.title || 'Podcast'} - Monochrome Music`;
+            document.title = `${podcastResult?.title || 'Podcast'} - Vero`;
 
             episodesContainer.innerHTML = '';
             await this.loadAllPodcastEpisodes();

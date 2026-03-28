@@ -49,8 +49,8 @@ export class ListenBrainzScrobbler {
             artist_name: artistName,
             track_name: track.cleanTitle || track.title,
             additional_info: {
-                submission_client: 'Monochrome',
-                submission_client_version: '1.0.0',
+                submission_client: 'Vero',
+                submission_client_version: '1.0.4',
             },
         };
 

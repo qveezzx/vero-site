@@ -1,6 +1,6 @@
- <p align="center">
+<p align="center">
   <a href="https://vero.com">
-    <img src="https://github.com/qveezzx/vero-site/blob/main/public/assets/512.png?raw=true" alt="Monochrome Logo" width="150px">
+    <img src="https://github.com/qveezzx/vero-site/blob/main/assets/banner.png?raw=true" alt="Vero Banner" width="150px">
   </a>
 </p>
 
@@ -26,6 +26,20 @@
   <a href="https://github.com/qveezzx/vero-site/issues">
     <img src="https://img.shields.io/github/issues/qveezzx/vero-site?style=for-the-badge&color=ffffff&labelColor=000000" alt="GitHub issues">
   </a>
+</p>
+
+<p align="center">
+  <strong>Download now</strong><br>
+  <a href="https://github.com/qveezzx/vero-site/releases/latest">
+    <img src="https://img.shields.io/badge/Windows-0078D4?style=for-the-badge&logo=windows&logoColor=white" alt="Windows">
+  </a>
+  <a href="https://github.com/qveezzx/vero-site/releases/latest">
+    <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android">
+  </a>
+  <a href="https://webvero.pages.dev/">
+    <img src="https://img.shields.io/badge/Web-ffffff?style=for-the-badge&logo=google-chrome&logoColor=black" alt="Web">
+  </a><br>
+  <sub>This version is used on older hardware, iOS/iPadOS devices or Smart TV's.</sub>
 </p>
 
 ---

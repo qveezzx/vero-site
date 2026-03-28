@@ -4,7 +4,7 @@
     "applicationIcon": "public/assets/appicon.png",
     "author": "Vero Team",
     "description": "Vero - Lossless music streaming",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "defaultMode": "window",
     "documentRoot": "dist/",
     "url": "/neutralino_loader.html",

@@ -1,10 +1,10 @@
 {
     "applicationId": "com.monochrome.app",
-    "applicationName": "Monochrome",
+    "applicationName": "Vero",
     "applicationIcon": "public/assets/appicon.png",
-    "author": "Monochrome",
-    "description": "Monochrome - Lossless music streaming",
-    "version": "1.0.0",
+    "author": "Vero Team",
+    "description": "Vero - Lossless music streaming",
+    "version": "1.0.4",
     "defaultMode": "window",
     "documentRoot": "/",
     "url": "/public/neutralino_loader.html",
@@ -14,7 +14,7 @@
     "tokenSecurity": "none",
     "modes": {
         "window": {
-            "title": "Monochrome (DEV)",
+            "title": "Vero (DEV)",
             "icon": "public/assets/appicon.png",
             "width": 1280,
             "height": 800,
@@ -31,7 +31,7 @@
     },
     "port": 5050,
     "cli": {
-        "binaryName": "Monochrome",
+        "binaryName": "Vero",
         "resourcesPath": "/",
         "binaryVersion": "6.5.0",
         "clientVersion": "6.5.0"

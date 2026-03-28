@@ -1,7 +1,7 @@
 {
     "name": "vero",
     "type": "module",
-    "version": "1.0.0",
+    "version": "1.0.4",
     "description": "[<img src=\"https://github.com/qveezzx/vero-site/blob/main/assets/512.png?raw=true\" alt=\"Vero Logo\">](https://vero-site.pages.dev)",
     "scripts": {
         "dev": "vite",
