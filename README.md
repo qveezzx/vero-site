@@ -262,6 +262,16 @@ We welcome contributions from the community! Please see our [Contributing Guide]
 
 ---
 
-<p align="center">
-  Made with ❤️ by the qveezz
-</p>
+<div align="center">
+  <p>Made with ❤️ by <b>qveezz</b></p>
+  <img src="https://github.com/qveezzx/vero-site/blob/main/assets/bannervibecoded.png?raw=true" alt="Vibe Coded." width="100%">
+  
+  <br>
+  
+  <p align="center">
+    <small>
+      <i>This project is an evolved framework featuring extensive <b>custom refactoring</b> and 
+      <b>bespoke architectural enhancements</b> built upon open-source foundations.</i>
+    </small>
+  </p>
+</div>
