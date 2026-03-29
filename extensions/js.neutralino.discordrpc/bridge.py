@@ -26,9 +26,9 @@ def recv_packet(s):
     except Exception:
         return None
 
-def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_text=None, small_img=None, small_txt=None):
+def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_text=None, small_img=None, small_txt=None, profile_url=None):
     global LAST_STATUS
-    current = f"{details}-{state}-{img}-{start}-{end}-{large_text}-{small_img}-{small_txt}"
+    current = f"{details}-{state}-{img}-{start}-{end}-{large_text}-{small_img}-{small_txt}-{profile_url}"
     if current == LAST_STATUS: return
     LAST_STATUS = current
 
@@ -37,15 +37,16 @@ def set_activity(ds, pid, details, state, img=None, start=None, end=None, large_
         "state": str(state or "Vero"),
         "type": 2, # Listening
         "assets": {
-            # Forces "vero" asset key to match your portal setup
             "large_image": img if img and img.startswith('http') else "vero",
             "large_text": str(large_text or "Vero Lossless")
         },
-        # ADDED BUTTONS ARRAY
         "buttons": [
             { "label": "Listen on Vero", "url": "https://webvero.pages.dev" }
         ]
     }
+
+    if profile_url:
+        activity["buttons"].append({ "label": "View Profile", "url": str(profile_url) })
 
     if small_img:
         activity["assets"]["small_image"] = str(small_img)
@@ -132,7 +133,7 @@ def main():
             msg = json.loads(data.decode('utf-8'))
             if msg['event'] == 'discord:update':
                 d = msg['data']
-                set_activity(ds, ppid, d.get('details'), d.get('state'), d.get('largeImageKey'), d.get('startTimestamp'), d.get('endTimestamp'), d.get('largeImageText'), d.get('smallImageKey'), d.get('smallImageText'))
+                set_activity(ds, ppid, d.get('details'), d.get('state'), d.get('largeImageKey'), d.get('startTimestamp'), d.get('endTimestamp'), d.get('largeImageText'), d.get('smallImageKey'), d.get('smallImageText'), d.get('profileUrl'))
             elif msg['event'] == 'discord:clear':
                 set_activity(ds, ppid, "Idling", "Vero")
             elif msg['event'] == 'windowClose':

@@ -2,7 +2,7 @@
 
 ## Quick Start
 
-### Monochrome Only
+### Vero Only
 
 ```bash
 docker compose up -d
@@ -104,11 +104,11 @@ Vero uses Appwrite for user authentication. While it defaults to official instan
 2. Enable the **Google** or **Email/Password** providers in the Appwrite Console.
 3. Set these variables in your `.env`:
     - `APPWRITE_ENDPOINT`: Your Appwrite API endpoint (e.g., `https://auth.yourdomain.com/v1`).
-    - `APPWRITE_PROJECT_ID`: Your Appwrite project ID (e.g., `auth-for-monochrome`).
+    - `APPWRITE_PROJECT_ID`: Your Appwrite project ID (e.g., `auth-for-vero`).
 
 ### Database (PocketBase)
 
-Vero uses PocketBase to store user data (playlists, favorites, profiles, etc.). You can run it alongside Monochrome using the `pocketbase` profile:
+Vero uses PocketBase to store user data (playlists, favorites, profiles, etc.). You can run it alongside vero using the `pocketbase` profile:
 
 ```bash
 docker compose --profile pocketbase up -d

@@ -57,6 +57,11 @@
 - Support for local music files
 - API caching for improved performance
 
+### Vero Connect (Remote Control)
+- **Seamless Playback Control**: Use your phone as a remote for your PC or TV.
+- **Device Discovery**: Automatically see and switch between active devices on your account.
+- **Real-time Sync**: Commands (Play/Pause/Skip/Volume) sync instantly via Appwrite Realtime.
+
 ### Interface
 
 - Dark, minimalist interface optimized for focus
@@ -87,6 +92,7 @@
 
 ### Integrations
 
+- **Advanced Account System**: Cross-device library syncing and **Remote Playback Control**.
 - Account system for cross-device syncing
 - Customizable & Public Profiles
 - Last.fm and ListenBrainz integration for scrobbling

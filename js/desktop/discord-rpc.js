@@ -1,10 +1,29 @@
 // js/desktop/discord-rpc.js
-import { getTrackTitle, getTrackArtists } from '../utils.js';
+import { getTrackTitle, getTrackArtists, getShareUrl } from '../utils.js';
+import { authManager } from '../accounts/auth.js';
+import { syncManager } from '../accounts/pocketbase.js';
 
 export function initializeDiscordRPC(player) {
     const EXTENSION_ID = 'js.neutralino.discordrpc';
+    let cachedProfileUrl = null;
 
-    function sendUpdate(track, isPaused = false) {
+    async function getProfileUrl() {
+        if (cachedProfileUrl) return cachedProfileUrl;
+        if (!authManager.user) return null;
+
+        try {
+            const data = await syncManager.getUserData();
+            if (data?.profile?.username) {
+                cachedProfileUrl = getShareUrl(`user/@${data.profile.username}`);
+                return cachedProfileUrl;
+            }
+        } catch (e) {
+            console.error('Failed to get user data for RPC', e);
+        }
+        return null;
+    }
+
+    async function sendUpdate(track, isPaused = false) {
         if (!track) return;
 
         let coverUrl = 'vero';
@@ -13,15 +32,22 @@ export function initializeDiscordRPC(player) {
             coverUrl = `https://resources.tidal.com/images/${coverId}/320x320.jpg`;
         }
 
+        const profileUrl = await getProfileUrl();
+
         const data = {
             details: getTrackTitle(track),
-            state: getTrackArtists(track),
+            state: `by ${getTrackArtists(track)}`,
             largeImageKey: coverUrl,
-            largeImageText: track.album?.title || 'Vero',
-            smallImageKey: isPaused ? 'pause' : 'play',
-            smallImageText: isPaused ? 'Paused' : 'Playing',
+            largeImageText: track.album?.title || 'Vero Lossless',
+            smallImageKey: 'vero',
+            smallImageText: isPaused ? 'Paused on Vero' : 'Listening on Vero',
             instance: false,
+            profileUrl: profileUrl
         };
+
+        if (track.album?.title && track.album.title !== track.title) {
+            data.state = `${getTrackArtists(track)} — ${track.album.title}`;
+        }
 
         if (!isPaused && track.duration) {
             const now = Date.now();
@@ -38,17 +64,24 @@ export function initializeDiscordRPC(player) {
             .catch((e) => console.error('Dispatch failed', e));
     }
 
-    player.audio.addEventListener('play', () => {
-        sendUpdate(player.currentTrack);
+    player.audio.addEventListener('play', async () => {
+        await sendUpdate(player.currentTrack);
     });
 
-    player.audio.addEventListener('pause', () => {
-        sendUpdate(player.currentTrack, true);
+    player.audio.addEventListener('pause', async () => {
+        await sendUpdate(player.currentTrack, true);
     });
 
-    player.audio.addEventListener('loadedmetadata', () => {
+    player.audio.addEventListener('loadedmetadata', async () => {
         if (!player.audio.paused) {
-            sendUpdate(player.currentTrack);
+            await sendUpdate(player.currentTrack);
+        }
+    });
+
+    authManager.onAuthStateChanged(() => {
+        cachedProfileUrl = null;
+        if (player.currentTrack) {
+            sendUpdate(player.currentTrack, player.audio.paused);
         }
     });
 
@@ -56,15 +89,18 @@ export function initializeDiscordRPC(player) {
     if (player.currentTrack) {
         sendUpdate(player.currentTrack, player.audio.paused);
     } else {
-        Neutralino.events
-            .broadcast('discord:update', {
-                details: 'Idling',
-                state: 'Vero',
-                largeImageKey: 'vero',
-                largeImageText: 'vero',
-                smallImageKey: 'pause',
-                smallImageText: 'Paused',
-            })
-            .catch(() => {});
+        getProfileUrl().then(profileUrl => {
+            Neutralino.events
+                .broadcast('discord:update', {
+                    details: 'Idling',
+                    state: 'Vero',
+                    largeImageKey: 'vero',
+                    largeImageText: 'Vero Lossless',
+                    smallImageKey: 'vero',
+                    smallImageText: 'Vero',
+                    profileUrl: profileUrl
+                })
+                .catch(() => {});
+        });
     }
 }

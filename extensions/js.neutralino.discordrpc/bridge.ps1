@@ -37,20 +37,23 @@ $h = New-Object byte[] 8; if ($pipe.Read($h, 0, 8) -eq 8) {
     Log "Handshake OK"
 }
 
-function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $small_txt) {
+function Set-Activity($d, $s, $img, $start, $end, $large_text, $small_img, $small_txt, $profile_url) {
+    $btns = @(
+        @{ label = "Listen on Vero"; url = "https://webvero.pages.dev" }
+    )
+    if ($profile_url) {
+        $btns += @{ label = "View Profile"; url = [string]$profile_url }
+    }
+
     $activity = @{
         details = [string]$d
         state = [string]$s
         type = 2
         assets = @{
-            # Forces "vero" asset key if not a direct URL
             large_image = if ($img -and $img.StartsWith("http")) { [string]$img } else { "vero" }
             large_text = if ($large_text) { [string]$large_text } else { "Vero Lossless" }
         }
-        # ADDED BUTTONS ARRAY
-        buttons = @(
-            @{ label = "Listen on Vero"; url = "https://webvero.pages.dev" }
-        )
+        buttons = $btns
     }
 
     if ($small_img) {
@@ -99,9 +102,9 @@ while ($ws.State -eq "Open") {
             $raw = [System.Text.Encoding]::UTF8.GetString($buf, 0, $task.Result.Count)
             $msg = $raw | ConvertFrom-Json
             if ($msg.event -eq "discord:update") { 
-                Set-Activity $msg.data.details $msg.data.state $msg.data.largeImageKey $msg.data.startTimestamp $msg.data.endTimestamp $msg.data.largeImageText $msg.data.smallImageKey $msg.data.smallImageText
+                Set-Activity $msg.data.details $msg.data.state $msg.data.largeImageKey $msg.data.startTimestamp $msg.data.endTimestamp $msg.data.largeImageText $msg.data.smallImageKey $msg.data.smallImageText $msg.data.profileUrl
             }
-            elseif ($msg.event -eq "discord:clear") { Set-Activity "Idling" "Vero" $null $null $null $null $null $null }
+            elseif ($msg.event -eq "discord:clear") { Set-Activity "Idling" "Vero" $null $null $null $null $null $null $null }
         } catch {}
     }
 }
