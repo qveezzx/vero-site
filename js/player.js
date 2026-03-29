@@ -1,3 +1,6 @@
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import {
     REPEAT_MODE,
     formatTime,
@@ -61,11 +64,11 @@ export class Player {
             (window.matchMedia?.('(display-mode: standalone)')?.matches || window.navigator?.standalone === true);
 
         this.hls = null;
-        // Sleep timer properties
+        // Sleep timer
         this.sleepTimer = null;
         this.sleepTimerEndTime = null;
         this.sleepTimerInterval = null;
-        // Artist popular tracks state
+        // Popular tracks state
         this.artistPopularTracksState = {
             artistId: null,
             offset: 0,
@@ -111,11 +114,9 @@ export class Player {
                 },
                 abr: {
                     enabled: true,
-                    // Start with a low bandwidth estimate (200kbps) so it plays instantly
-                    // on slow connections and smoothly scales UP to Hi-Fi if the connection allows.
                     defaultBandwidthEstimate: 100000,
-                    switchInterval: 1, // Check more frequently
-                    bandwidthDowngradeTarget: 0.8, // Downgrade more aggressively if bandwidth drops
+                    switchInterval: 1,
+                    bandwidthDowngradeTarget: 0.8,
                     restrictToElementSize: false,
                 },
                 mediaSource: {
@@ -944,12 +945,11 @@ export class Player {
 
                 await this.safePlay(activeElement);
             } else {
-                // Tidal: Try to get ReplayGain from manifest first, supplement with track info if needed
+                // ReplayGain from manifest
                 const streamInfoPromise = this.preloadCache.has(track.id)
                     ? Promise.resolve(this.preloadCache.get(track.id))
                     : this.api.getStreamUrl(track.id, this.quality);
 
-                // We only need the legacy track info if we missed getting ReplayGain from the manifest endpoint
                 const resolvedStreamInfo = await streamInfoPromise;
                 if (this.playbackSequence !== currentSequence) return;
 
@@ -959,7 +959,6 @@ export class Player {
                     this.currentRgValues = resolvedStreamInfo.rgInfo;
                     this.applyReplayGain();
                 } else {
-                    // Fallback to legacy metadata if manifest lacked normalization data
                     const trackData = await this.api.getTrack(track.id, this.quality).catch(() => null);
                     if (this.playbackSequence !== currentSequence) return;
 

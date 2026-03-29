@@ -1,3 +1,6 @@
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 function isFuzzyMatch(str1, str2) {
     if (!str1 || !str2) return false;
     const s1 = str1.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
@@ -39,12 +42,6 @@ function getTrackArtists(track) {
     return track.artist?.name || 'Unknown Artist';
 }
 
-/**
- * Generates CSV playlist export
- * @param {Object} playlist - Playlist metadata
- * @param {Array} tracks - Array of track objects
- * @returns {string} CSV content
- */
 export function generateCSV(playlist, tracks) {
     const headers = ['Track Name', 'Artist Name(s)', 'Album', 'Duration'];
     let content = headers.map((h) => `"${h}"`).join(',') + '\n';
@@ -61,12 +58,6 @@ export function generateCSV(playlist, tracks) {
     return content;
 }
 
-/**
- * Generates XSPF (XML Shareable Playlist Format) export
- * @param {Object} playlist - Playlist metadata
- * @param {Array} tracks - Array of track objects
- * @returns {string} XSPF XML content
- */
 export function generateXSPF(playlist, tracks) {
     const date = new Date().toISOString();
 

@@ -1,5 +1,6 @@
-//storage.js
-
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import { SVG_RIGHT_ARROW } from './icons';
 
 export const apiSettings = {

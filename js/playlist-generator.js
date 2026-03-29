@@ -1,15 +1,8 @@
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import { sanitizeForFilename } from './utils.js';
 
-/**
- * Generates M3U playlist content
- * @param {Object} playlist - Playlist metadata (title, artist, etc.)
- * @param {Array} tracks - Array of track objects
- * @param {boolean} _useRelativePaths - Unused; kept for API compatibility
- * @param {Function|null} pathResolver - Optional resolver for per-track relative path (used when trackPaths is null)
- * @param {string} audioExtension - Audio file extension for generated paths (used when trackPaths is null)
- * @param {Array|null} trackPaths - Actual per-track resolved paths; when provided, overrides pathResolver/audioExtension
- * @returns {string} M3U content
- */
 export function generateM3U(
     playlist,
     tracks,

@@ -1,4 +1,6 @@
-//js/app.js
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import discordSvg from '../images/discord.svg?svg&size=22';
 import googleSvg from '../images/google.svg?svg&size=22';
 import githubSvg from '../images/github.svg?svg&size=22';
@@ -78,17 +80,15 @@ import {
 } from './icons.js';
 import { HiFiClient } from './HiFi.js';
 
-// Capture real iOS state before spoofing (needed for background audio)
+// iOS background audio fix
 if (typeof window !== 'undefined') {
     const _ua = navigator.userAgent.toLowerCase();
-    // Spoof User-Agent to bypass Google's embedded browser check
     Object.defineProperty(navigator, 'userAgent', {
         get: function () {
             return 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
         },
     });
 
-    // analytics
     const plausibleScript = document.createElement('script');
     plausibleScript.async = true;
     plausibleScript.src = 'https://plausible.canine.tools/js/pa-dCMvQpiD1-AJmi8o3xviO.js';
@@ -107,7 +107,6 @@ if (typeof window !== 'undefined') {
     window.plausible.init();
 }
 
-// Lazy-loaded modules
 let settingsModule = null;
 let downloadsModule = null;
 let metadataModule = null;
@@ -439,8 +438,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const audioPlayer = document.getElementById('audio-player');
 
-    // i love ios and macos!!!! webkit fucking SUCKS BULLSHIT sorry ios/macos heads yall getting lossless only playback
-    // Use isIos from platform-detection (set before UA spoof in index.html) so detection works on real iOS.
+    // iOS/Safari quality fix
     if (isIos || isSafari) {
         const qualitySelect = document.getElementById('streaming-quality-setting');
         const downloadQualitySelect = document.getElementById('download-quality-setting');
@@ -475,7 +473,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Initialize tracker
     initTracker();
 
-    // Linux Media Keys Fix
+    // Media keys bridge
     if (window.NL_MODE) {
         import('./desktop/neutralino-bridge.js').then(({ events }) => {
             events.on('mediaNext', () => Player.instance.playNext());
@@ -551,15 +549,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     await UIRenderer.initialize(MusicAPI.instance, Player.instance);
 
-    /**
-     * Scans the configured local media folder and refreshes `window.localFilesCache`.
-     * Called by the folder-select button handler and by downloads.js after a
-     * successful write to the local media folder.
-     *
-     * @param {boolean} [onlyIfAlreadyScanned=false] When true, skips the scan if
-     *   `window.localFilesCache` has never been populated (i.e. the user hasn't
-     *   visited the local tab yet).
-     */
     async function scanLocalMediaFolder(onlyIfAlreadyScanned = false) {
         // Skip the scan if the user has never visited the local tab – they'll
         // get a fresh scan when they navigate there for the first time.
@@ -660,17 +649,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         return window.localFilesCache;
     }
 
-    /**
-     * Called by downloads.js (via window) after a successful write to the local
-     * media folder so the track appears in Library > Local without the user
-     * having to manually re-scan.
-     *
-     * When called with a `blob` and `filename` (single-track download case) it
-     * performs a cheap partial update — reading metadata only from that one file
-     * and inserting it into the existing cache — so the full folder does not need
-     * to be re-walked.  When called with no arguments (bulk download case, or when
-     * `localFilesCache` has never been populated) it falls back to a full rescan.
-     */
     window.refreshLocalMediaFolder = async (blob = null, filename = null) => {
         if (blob && filename) {
             try {
@@ -2927,7 +2905,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <button id="header-spotify-auth" title="Spotify" style="${iconBtnStyle}">${spotifySvg}</button>
                     </div>
                     <hr style="border:none;border-top:1px solid var(--border);margin:0.25rem 0">
-                    <button class="btn-secondary" id="header-email-auth">Connect with Email</button>
+                    <button class="dropdown-item" id="header-email-auth">Connect with Email</button>
                 `;
 
                 for (const id of [
@@ -2959,11 +2937,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             } else {
                 const data = await syncManager.getUserData();
                 const hasProfile = data && data.profile && data.profile.username;
+                const nickname = data?.profile?.display_name || data?.profile?.username || user.email?.split('@')[0] || 'User';
+                const avatar = data?.profile?.avatar_url || '/assets/appicon.png';
+
+                const profileHeader = `
+                    <div class="dropdown-profile-header">
+                        <img src="${avatar}" alt="Avatar" class="dropdown-avatar">
+                        <div class="dropdown-user-info">
+                            <span class="dropdown-nickname">${nickname}</span>
+                            <span class="dropdown-username">@${data?.profile?.username || 'user'}</span>
+                        </div>
+                    </div>
+                    <hr style="border:none;border-top:1px solid var(--border);margin:0.5rem 0">
+                `;
 
                 if (hasProfile) {
                     headerAccountDropdown.innerHTML = `
-                        <button class="btn-secondary" id="header-view-profile">My Profile</button>
-                        <button class="btn-secondary danger" id="header-sign-out">Sign Out</button>
+                        ${profileHeader}
+                        <button class="dropdown-item" id="header-view-profile">My Profile</button>
+                        <button class="dropdown-item danger" id="header-sign-out">Sign Out</button>
                     `;
                     document.getElementById('header-view-profile').onclick = () => {
                         navigate(`/user/@${data.profile.username}`);
@@ -2971,15 +2963,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                     };
                 } else {
                     headerAccountDropdown.innerHTML = `
-                        <button class="btn-primary" id="header-create-profile">Create Profile</button>
-                        <button class="btn-secondary danger" id="header-sign-out">Sign Out</button>
+                        ${profileHeader}
+                        <button class="dropdown-item primary" id="header-create-profile">Create Profile</button>
+                        <button class="dropdown-item danger" id="header-sign-out">Sign Out</button>
                     `;
                     document.getElementById('header-create-profile').onclick = () => {
                         openEditProfile();
                         headerAccountDropdown.classList.remove('active');
                     };
                 }
-
                 document.getElementById('header-sign-out').onclick = () => authManager.signOut();
             }
         }

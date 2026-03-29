@@ -1,4 +1,6 @@
-//js/settings
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import {
     themeManager,
     lastFMStorage,
@@ -431,9 +433,7 @@ export async function initializeSettings(scrobbler, player, api, ui) {
         });
     }
 
-    // ========================================
     // Global Scrobble Settings
-    // ========================================
     const scrobblePercentageSlider = document.getElementById('scrobble-percentage-slider');
     const scrobblePercentageInput = document.getElementById('scrobble-percentage-input');
 
@@ -465,9 +465,7 @@ export async function initializeSettings(scrobbler, player, api, ui) {
         });
     }
 
-    // ========================================
     // ListenBrainz Settings
-    // ========================================
     const lbToggle = document.getElementById('listenbrainz-enabled-toggle');
     const lbTokenSetting = document.getElementById('listenbrainz-token-setting');
     const lbCustomUrlSetting = document.getElementById('listenbrainz-custom-url-setting');

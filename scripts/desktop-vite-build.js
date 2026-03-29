@@ -1,5 +1,5 @@
 /**
- * Sets VERO_DESKTOP_BUILD so vite injects __neutralino_globals.js (see vite.config.ts).
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
  */
 import { spawnSync } from 'node:child_process';
 

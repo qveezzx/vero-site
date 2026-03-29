@@ -1,4 +1,6 @@
-//js/utils.js
+/**
+ * Modified by qveezzx on 03.28.2026-03.29.2026 and later
+ */
 import { modernSettings } from './ModernSettings.js';
 import { SVG_ATMOS } from './icons.js';
 import { qualityBadgeSettings, coverArtSizeSettings, trackDateSettings } from './storage.js';
@@ -77,10 +79,6 @@ export const sanitizeForFilename = (value) => {
         .trim();
 };
 
-/**
- * Sanitizes a single path component (no slashes allowed in the output).
- * Invalid filesystem characters are replaced with underscores.
- */
 export const sanitizeForPathComponent = (value) => {
     if (!value) return 'Unknown';
     return value
@@ -89,12 +87,6 @@ export const sanitizeForPathComponent = (value) => {
         .trim();
 };
 
-/**
- * Like {@link formatTemplate} but allows `/` in the template for nested
- * directory structures.  Each path component has invalid characters replaced,
- * the path is normalised to forward-slash separators, and empty components,
- * `.`, and `..` segments are stripped.
- */
 export const formatPathTemplate = (template, data) => {
     let result = replaceTokens(template, {
         discNumber: String(Number(data.discNumber || 1)),
@@ -116,12 +108,6 @@ export const formatPathTemplate = (template, data) => {
         .join('/');
 };
 
-/**
- * Detects audio format from DataView of first bytes
- * @param {DataView} view - DataView of first 12 bytes of audio file
- * @param {string} mimeType - MIME type from blob
- * @returns {string|null} - Format: 'flac', 'mp4', 'mp3', or null
- */
 export const detectAudioFormat = (view, mimeType = '') => {
     // Check for FLAC signature: "fLaC" (0x66 0x4C 0x61 0x43)
     if (
