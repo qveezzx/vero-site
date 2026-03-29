@@ -264,7 +264,7 @@ We welcome contributions from the community! Please see our [Contributing Guide]
 
 <div align="center">
   <p>Made with ❤️ by <b>qveezz</b></p>
-  <img src="https://github.com/qveezzx/vero-site/blob/main/assets/bannervibecoded.png?raw=true" alt="Vibe Coded." width="100%">
+  <img src="https://github.com/qveezzx/vero-site/blob/main/assets/bannervibecoded.png?raw=true" alt="Vibe Coded." width="30%">
   
   <br>
   
